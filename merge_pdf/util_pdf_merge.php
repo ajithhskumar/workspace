@@ -1,13 +1,14 @@
 <?php
 function console_log($msg) {
-	echo '<script type="text/javascript">' .
+	echo '<script type=\"text/javascript\">' .
 	  'console.log(' . $msg . ');</script>';
 }
 
 // Check the hash of receiver
 if (isset($_GET['op'])) {
 	$operation=$_GET['op'];
-	//console_log($operation);
+	console_log($operation);
+	console_log("op not set. exiting");
 }
 else
 {
@@ -41,6 +42,16 @@ if (isset($_GET['doc_two'])) {
 	}
 }
 
+require_once __DIR__ . '/Clipboard.php';
+echo "Clip";
+$c = new Clipboard();
+
+if ($c->isUnsupported() === false) {
+	$c->writeAll('copied');
+	echo '<script>alert("Copied")</script>';
+	echo "<script>window.close();</script>";
+	exit;
+}
 //var_dump($files);
 $outFileName="";
 foreach ($files as $file) {
@@ -58,7 +69,8 @@ if(!($ret === NULL))
 {
 	header("Content-Type: application/octet-stream");
 	$file = $outFileName;
-	header("Content-Disposition: attachment; filename=" . urlencode($file));   
+	$name="myname";
+	header("Content-Disposition: attachment; filename=".$name);   
 	header("Content-Type: application/download");
 	header("Content-Description: File Transfer");            
 	header("Content-Length: " . filesize($file));
